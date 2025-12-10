@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("postgres")
@@ -17,6 +20,49 @@ builder.AddViteApp("web", "../DrillSkill.Web")
     .WithHttpsEndpoint(env: "PORT", port: 5173, name: "https")
     .WithExternalHttpEndpoints()
     .WithEnvironment("DATABASE_URL", db)
-    .WithEnvironment("REDIS_URL", redis);
+    .WithEnvironment("REDIS_URL", redis)
+    .WithCommand(
+        "reset-db", 
+        "Reset Database",
+        executeCommand: async (context) =>
+        {
+            try
+            {
+                var webDir = Path.GetFullPath(Path.Combine(builder.AppHostDirectory, "../DrillSkill.Web"));
+                var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+                var fileName = isWindows ? "cmd" : "npx";
+                var args = isWindows ? "/c npx prisma migrate reset --force" : "prisma migrate reset --force";
+
+                var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = fileName,
+                    Arguments = args,
+                    WorkingDirectory = webDir,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+
+                if (process == null) return new ExecuteCommandResult { Success = false, ErrorMessage = "Failed to start process" };
+
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    var error = await process.StandardError.ReadToEndAsync();
+                    return new ExecuteCommandResult { Success = false, ErrorMessage = $"Exit Code: {process.ExitCode}. Error: {error}" };
+                }
+
+                return new ExecuteCommandResult { Success = true };
+            }
+            catch (Exception ex)
+            {
+                return new ExecuteCommandResult { Success = false, ErrorMessage = ex.Message };
+            }
+        },
+        iconName: "Database",
+        confirmationMessage: "Are you sure you want to reset the database? This will delete all data."
+    );
 
 builder.Build().Run();

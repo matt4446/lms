@@ -151,3 +151,13 @@ model Result {
 
   @@map("result")
 }
+
+model SystemConfig {
+  id        String   @id @default("default")
+  siteName  String   @default("DrillSkill")
+  isSetup   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_config")
+}
