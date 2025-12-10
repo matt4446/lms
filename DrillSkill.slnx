@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src\DrillSkill.AppHost\DrillSkill.AppHost.csproj" />
+  <Project Path="src\DrillSkill.ServiceDefaults\DrillSkill.ServiceDefaults.csproj" />
+</Solution>

@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String       @unique
+  emailVerified Boolean      @default(false)
+  image         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  role          String       @default("user") // "admin", "instructor", "learner"
+  
+  sessions      Session[]
+  accounts      Account[]
+  
+  coursesOwned  Course[]     @relation("CourseOwner")
+  enrollments   Enrollment[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id           String    @id @default(cuid())
+  userId       String
+  accountId    String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  password     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+// LMS Models
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  ownerId     String
+  owner       User     @relation("CourseOwner", fields: [ownerId], references: [id])
+  
+  sections    Section[]
+  enrollments Enrollment[]
+
+  @@map("course")
+}
+
+model Section {
+  id          String   @id @default(cuid())
+  title       String
+  content     String?  // Markdown content
+  order       Int      @default(0)
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  parentId    String?
+  parent      Section? @relation("SectionHierarchy", fields: [parentId], references: [id])
+  children    Section[] @relation("SectionHierarchy")
+  
+  exam        Exam?
+
+  @@map("section")
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  status    String   @default("active") // "active", "completed", "dropped"
+  progress  Json?    // Store progress data (completed sections)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  results   Result[]
+
+  @@unique([userId, courseId])
+  @@map("enrollment")
+}
+
+model Exam {
+  id        String   @id @default(cuid())
+  sectionId String   @unique
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  
+  questions Json     // Array of questions
+  
+  results   Result[]
+
+  @@map("exam")
+}
+
+model Result {
+  id           String     @id @default(cuid())
+  examId       String
+  enrollmentId String
+  score        Float
+  passed       Boolean
+  answers      Json?      // User answers
+  createdAt    DateTime   @default(now())
+  
+  exam         Exam       @relation(fields: [examId], references: [id], onDelete: Cascade)
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  @@map("result")
+}
