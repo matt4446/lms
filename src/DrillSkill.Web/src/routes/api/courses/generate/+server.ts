@@ -1,8 +1,13 @@
 import { json } from '@sveltejs/kit';
 import { openai } from '$lib/server/ai';
 import type { RequestHandler } from './$types';
+import { env } from '$env/dynamic/public';
 
 export const POST: RequestHandler = async ({ request }) => {
+    if (env.PUBLIC_ENABLE_AI !== 'true') {
+        return json({ error: 'AI generation is disabled' }, { status: 403 });
+    }
+
     const { topic } = await request.json();
 
     if (!topic) {

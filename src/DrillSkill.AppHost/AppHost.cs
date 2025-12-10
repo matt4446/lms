@@ -14,7 +14,8 @@ var redis = builder.AddRedis("redis")
 builder.AddViteApp("web", "../DrillSkill.Web")
     .WithReference(db)
     .WithReference(redis)
-    .WithHttpEndpoint(name: "login", port: 30030)
+    .WithHttpsEndpoint(env: "PORT", port: 5173, name: "https")
+    .WithExternalHttpEndpoints()
     .WithEnvironment("DATABASE_URL", db)
     .WithEnvironment("REDIS_URL", redis);
 

@@ -46,6 +46,9 @@ model Account {
   accountId    String
   providerId   String
   accessToken  String?
+  idToken      String?
+  accessTokenExpiresAt DateTime?
+  scope        String?
   refreshToken String?
   expiresAt    DateTime?
   password     String?

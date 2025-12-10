@@ -1,36 +1,40 @@
 {
-	"name": "drillskill.web",
-	"private": true,
-	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
-	},
-	"devDependencies": {
-		"@sveltejs/adapter-auto": "^7.0.0",
-		"@sveltejs/kit": "^2.48.5",
-		"@sveltejs/vite-plugin-svelte": "^6.2.1",
-		"@tailwindcss/vite": "^4.1.17",
-		"svelte": "^5.43.8",
-		"svelte-check": "^4.3.4",
-		"tailwindcss": "^4.1.17",
-		"typescript": "^5.9.3",
-		"vite": "^7.2.2"
-	},
-	"dependencies": {
-		"@prisma/adapter-pg": "^7.1.0",
-		"@prisma/client": "^7.1.0",
-		"@types/node": "^24.10.2",
-		"@types/pg": "^8.15.6",
-		"better-auth": "^1.4.6",
-		"dotenv": "^17.2.3",
-		"openai": "^6.10.0",
-		"pg": "^8.16.3",
-		"prisma": "^7.1.0"
-	}
+  "name": "drillskill.web",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@sveltejs/adapter-auto": "^7.0.0",
+    "@sveltejs/kit": "^2.48.5",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@tailwindcss/vite": "^4.1.17",
+    "@types/marked": "^6.0.0",
+    "svelte": "^5.43.8",
+    "svelte-check": "^4.3.4",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vite-plugin-mkcert": "^1.17.9"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
+    "@types/node": "^24.10.2",
+    "@types/pg": "^8.15.6",
+    "better-auth": "^1.4.6",
+    "dotenv": "^17.2.3",
+    "marked": "^17.0.1",
+    "openai": "^6.10.0",
+    "pg": "^8.16.3",
+    "prisma": "^7.1.0"
+  }
 }

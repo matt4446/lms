@@ -11,13 +11,13 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true
     },
-    //trustedOrigins: ['http://localhost:5174'],
-    // socialProviders: {
-    //     google: {
-    //         clientId: env.GOOGLE_CLIENT_ID!,
-    //         clientSecret: env.GOOGLE_CLIENT_SECRET!,
-    //     }
-    // },
+    trustedOrigins: ['https://localhost:5173'],
+    socialProviders: {
+        google: {
+            clientId: env.GOOGLE_CLIENT_ID!,
+            clientSecret: env.GOOGLE_CLIENT_SECRET!,
+        }
+    },
     user: {
         additionalFields: {
             role: {

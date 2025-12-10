@@ -3,7 +3,11 @@ import { auth } from '$lib/server/auth';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, request }) => {
+    const session = await auth.api.getSession({
+        headers: request.headers
+    });
+
     const course = await prisma.course.findUnique({
         where: {
             id: params.id
@@ -11,6 +15,7 @@ export const load: PageServerLoad = async ({ params }) => {
         include: {
             owner: {
                 select: {
+                    id: true,
                     name: true
                 }
             },
@@ -31,8 +36,28 @@ export const load: PageServerLoad = async ({ params }) => {
         throw error(404, 'Course not found');
     }
 
+    let isAuthor = false;
+    let isEnrolled = false;
+
+    if (session) {
+        isAuthor = course.owner.id === session.user.id;
+        
+        const enrollment = await prisma.enrollment.findUnique({
+            where: {
+                userId_courseId: {
+                    userId: session.user.id,
+                    courseId: params.id
+                }
+            }
+        });
+        
+        isEnrolled = !!enrollment;
+    }
+
     return {
-        course
+        course,
+        isAuthor,
+        isEnrolled
     };
 };
 

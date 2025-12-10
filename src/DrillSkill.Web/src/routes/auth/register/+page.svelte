@@ -20,9 +20,10 @@
             });
 
             if (err) {
-                error = err.message;
+                error = err.message || 'An error occurred';
             } else {
-                goto("/dashboard");
+                // Force full reload to ensure session is picked up
+                window.location.href = "/dashboard";
             }
         } catch (e) {
             console.error("Registration error:", e);
@@ -42,7 +43,7 @@
             });
 
             if (err) {
-                error = err.message;
+                error = err.message || 'An error occurred';
                 loading = false;
             }
             // Redirect happens automatically

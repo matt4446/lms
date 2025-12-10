@@ -21,18 +21,32 @@
                     <p class="mt-2 text-sm text-gray-500">{data.course.owner.name || 'Unknown'}</p>
                 </div>
 
+                {#if data.isAuthor}
+                    <div class="mt-6">
+                        <a href={`/courses/${data.course.id}/results`} class="w-full bg-white border border-gray-300 rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            View Exam Results
+                        </a>
+                    </div>
+                {/if}
+
                 <div class="mt-10">
-                    <form method="POST" action="?/enroll" use:enhance={() => {
-                        enrolling = true;
-                        return async ({ update }) => {
-                            await update();
-                            enrolling = false;
-                        };
-                    }}>
-                        <button type="submit" disabled={enrolling} class="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
-                            {enrolling ? 'Enrolling...' : 'Enroll in Course'}
-                        </button>
-                    </form>
+                    {#if data.isEnrolled}
+                        <a href={`/courses/${data.course.id}/learn/${data.course.sections[0]?.id}`} class="w-full bg-green-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Continue Learning
+                        </a>
+                    {:else}
+                        <form method="POST" action="?/enroll" use:enhance={() => {
+                            enrolling = true;
+                            return async ({ update }) => {
+                                await update();
+                                enrolling = false;
+                            };
+                        }}>
+                            <button type="submit" disabled={enrolling} class="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+                                {enrolling ? 'Enrolling...' : 'Enroll in Course'}
+                            </button>
+                        </form>
+                    {/if}
                 </div>
             </div>
 
