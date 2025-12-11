@@ -7,7 +7,7 @@
 </script>
 
 <div class="min-h-screen flex flex-col bg-gray-50">
-	<Navbar session={data.session} />
+	<Navbar session={data.session} siteName={data.siteName} />
 	<main class="flex-grow">
 		{@render children()}
 	</main>
