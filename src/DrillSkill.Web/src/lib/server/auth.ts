@@ -7,6 +7,7 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
+    secret: env.BETTER_AUTH_SECRET,
     debug: true, // Enable debug logging
     emailAndPassword: {
         enabled: true

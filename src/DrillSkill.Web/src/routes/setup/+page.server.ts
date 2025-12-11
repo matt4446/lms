@@ -3,8 +3,9 @@ import type { Actions, PageServerLoad } from './$types';
 import { performSetup, finishSetup } from '$lib/server/setup';
 import { isAppConfigured } from '$lib/server/state';
 import { auth } from '$lib/server/auth';
+import { prisma } from '$lib/server/db';
 
-export const load: PageServerLoad = async ({ request }) => {
+export const load: PageServerLoad = async ({ request, cookies }) => {
     if (await isAppConfigured()) {
         throw redirect(303, '/');
     }
@@ -12,6 +13,30 @@ export const load: PageServerLoad = async ({ request }) => {
     const session = await auth.api.getSession({
         headers: request.headers
     });
+
+    if (session) {
+        // User is logged in but app is not configured.
+        // This happens after OAuth callback.
+        
+        // 1. Check for siteName cookie
+        const siteName = cookies.get('setup_site_name');
+        
+        if (siteName) {
+            // 2. Finish setup automatically
+            const result = await finishSetup(session.user.id, decodeURIComponent(siteName));
+            if (result.success) {
+                // Clear cookie
+                cookies.delete('setup_site_name', { path: '/' });
+                throw redirect(303, '/dashboard');
+            } else {
+                console.error('Failed to finish setup from cookie:', result.error);
+            }
+        }
+        
+        // If no cookie or failed, we might want to show a "Finish Setup" UI.
+        // But for now, let's just return the session so the UI can adapt if needed.
+        // Or we can just let them fill the form again (but they are logged in).
+    }
 
     return {
         session
