@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
         throw error(404, 'Section not found');
     }
 
-    if (section.courseId !== params.id) {
+    if (section.courseId !== params.courseId) {
         throw error(404, 'Section not found in this course');
     }
 
@@ -31,24 +31,24 @@ export const load: PageServerLoad = async ({ params, request }) => {
     });
     
     if (!session) {
-        throw redirect(302, `/auth/login?redirectTo=/courses/${params.id}/learn/${params.sectionId}`);
+        throw redirect(302, `/auth/login?redirectTo=/courses/${params.courseId}/learn/${params.sectionId}`);
     }
 
     const enrollment = await prisma.enrollment.findUnique({
         where: {
             userId_courseId: {
                 userId: session.user.id,
-                courseId: params.id
+                courseId: params.courseId
             }
         }
     });
 
     if (!enrollment) {
-        throw redirect(303, `/courses/${params.id}`);
+        throw redirect(303, `/courses/${params.courseId}`);
     }
 
     const sections = await prisma.section.findMany({
-        where: { courseId: params.id },
+        where: { courseId: params.courseId },
         orderBy: { order: 'asc' },
         select: { id: true }
     });
@@ -58,7 +58,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
         const prevSection = sections[currentIndex - 1];
         const progress = (enrollment.progress as any) || {};
         if (!progress[prevSection.id]?.completed) {
-            throw redirect(302, `/courses/${params.id}/learn/${prevSection.id}`);
+            throw redirect(302, `/courses/${params.courseId}/learn/${prevSection.id}`);
         }
     }
 
@@ -96,7 +96,7 @@ export const actions: Actions = {
             where: {
                 userId_courseId: {
                     userId: session.user.id,
-                    courseId: params.id
+                    courseId: params.courseId
                 }
             }
         });

@@ -24,37 +24,13 @@
 
 {#snippet courseCard(course: any)}
     <div class="group relative border rounded-lg p-4 hover:shadow-lg transition-shadow bg-white">
-        <div class="mt-4 flex justify-between">
-            <div>
-                <h3 class="text-lg font-medium text-gray-900">
-                    <a href="/courses/{course.id}">
-                        <span aria-hidden="true" class="absolute inset-0"></span>
-                        {course.title}
-                    </a>
-                </h3>
-                <p class="mt-1 text-sm text-gray-500 line-clamp-2">{course.description || 'No description available.'}</p>
-            </div>
-        </div>
-        <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
-            <div class="flex items-center">
-                <span>{course._count.sections} Sections</span>
-                <span class="mx-2">•</span>
-                <span>{course.owner.name || 'Unknown'}</span>
-            </div>
-            {#if !course.published}
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                    Draft
-                </span>
-            {/if}
-        </div>
-        
         {#if data.userId === course.owner.id}
-            <div class="mt-4 pt-4 border-t border-gray-100 flex justify-end relative">
+            <div class="absolute top-4 right-4 z-20">
                 <div class="relative inline-block text-left">
                     <button 
                         type="button" 
                         onclick={(e) => toggleMenu(course.id, e)}
-                        class="relative z-10 inline-flex items-center p-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        class="relative inline-flex items-center p-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         id="menu-button-{course.id}" 
                         aria-expanded={activeMenuId === course.id} 
                         aria-haspopup="true"
@@ -67,7 +43,7 @@
 
                     {#if activeMenuId === course.id}
                         <div 
-                            class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20" 
+                            class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" 
                             role="menu" 
                             aria-orientation="vertical" 
                             aria-labelledby="menu-button-{course.id}" 
@@ -111,6 +87,30 @@
                 </div>
             </div>
         {/if}
+
+        <div class="mt-4 flex justify-between">
+            <div class="pr-12">
+                <h3 class="text-lg font-medium text-gray-900">
+                    <a href="/courses/{course.id}">
+                        <span aria-hidden="true" class="absolute inset-0"></span>
+                        {course.title}
+                    </a>
+                </h3>
+                <p class="mt-1 text-sm text-gray-500 line-clamp-2">{course.description || 'No description available.'}</p>
+            </div>
+        </div>
+        <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
+            <div class="flex items-center">
+                <span>{course._count.sections} Sections</span>
+                <span class="mx-2">•</span>
+                <span>{course.owner.name || 'Unknown'}</span>
+            </div>
+            {#if !course.published}
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                    Draft
+                </span>
+            {/if}
+        </div>
     </div>
 {/snippet}
 

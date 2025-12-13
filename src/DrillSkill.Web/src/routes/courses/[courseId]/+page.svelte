@@ -31,7 +31,7 @@
 
                 <div class="mt-10">
                     {#if data.isEnrolled}
-                        <a href={`/courses/${data.course.id}/learn/${data.course.sections[0]?.id}`} class="w-full bg-green-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <a href={`/courses/${data.course.id}/learn`} class="w-full bg-green-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             Continue Learning
                         </a>
                     {:else}

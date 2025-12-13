@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
     });
 
     if (!session) {
-        throw redirect(302, `/auth/login?redirectTo=/courses/${params.id}/learn/${params.sectionId}/exam`);
+        throw redirect(302, `/auth/login?redirectTo=/courses/${params.courseId}/learn/${params.sectionId}/exam`);
     }
 
     const exam = await prisma.exam.findUnique({
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
         throw error(404, 'Exam not found');
     }
 
-    if (exam.section.courseId !== params.id) {
+    if (exam.section.courseId !== params.courseId) {
         throw error(404, 'Exam not found in this course');
     }
 
@@ -96,7 +96,7 @@ export const actions: Actions = {
             where: {
                 userId_courseId: {
                     userId: session.user.id,
-                    courseId: params.id
+                    courseId: params.courseId
                 }
             }
         });

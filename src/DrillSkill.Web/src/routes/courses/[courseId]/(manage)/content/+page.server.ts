@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
     await parent(); // Ensure auth and course existence from layout
 
     const sections = await prisma.section.findMany({
-        where: { courseId: params.id },
+        where: { courseId: params.courseId },
         orderBy: { order: 'asc' },
         include: {
             exam: true
@@ -42,7 +42,7 @@ export const actions: Actions = {
             await prisma.$transaction(async (tx) => {
                 // 1. Get existing section IDs
                 const existingSections = await tx.section.findMany({
-                    where: { courseId: params.id },
+                    where: { courseId: params.courseId },
                     select: { id: true }
                 });
                 const existingIds = new Set(existingSections.map(s => s.id));
@@ -86,7 +86,7 @@ export const actions: Actions = {
                         // Create new
                         await tx.section.create({
                             data: {
-                                courseId: params.id,
+                                courseId: params.courseId,
                                 title: section.title,
                                 content: section.content,
                                 order: i,

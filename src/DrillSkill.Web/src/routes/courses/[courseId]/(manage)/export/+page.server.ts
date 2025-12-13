@@ -8,12 +8,12 @@ export const load: PageServerLoad = async ({ params, locals, request }) => {
   const session = await locals.auth.getSession({ headers: request.headers });
   if (!session?.user) throw redirect(302, '/auth/signin');
 
-  const course = await courseService.getCourse(params.id);
+  const course = await courseService.getCourse(params.courseId);
   if (!course) throw redirect(404, '/dashboard/courses');
 
   // Get all versions with their exports
   const versions = await prisma.courseVersion.findMany({
-    where: { courseId: params.id },
+    where: { courseId: params.courseId },
     orderBy: { versionNumber: 'desc' },
     include: {
       exports: {

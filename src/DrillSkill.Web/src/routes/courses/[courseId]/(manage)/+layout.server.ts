@@ -8,7 +8,7 @@ export const load: LayoutServerLoad = async ({ params, locals, request }) => {
     throw error(401, 'Unauthorized');
   }
 
-  const course = await courseService.getCourse(params.id);
+  const course = await courseService.getCourse(params.courseId);
   if (!course) {
     throw error(404, 'Course not found');
   }
