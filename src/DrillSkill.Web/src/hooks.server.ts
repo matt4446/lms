@@ -38,6 +38,9 @@ export async function handle({ event, resolve }) {
         }
     }
 
+    // Explicitly set locals.auth
+    event.locals.auth = auth.api;
+
 	try {
 		return await svelteKitHandler({ event, resolve, auth, building });
 	} catch (err: any) {

@@ -77,6 +77,7 @@ model Course {
   id          String   @id @default(cuid())
   title       String
   description String?
+  coverImage  String?
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -87,7 +88,67 @@ model Course {
   sections    Section[]
   enrollments Enrollment[]
 
+  // Versioning
+  versions          CourseVersion[]
+  publishedVersion  CourseVersion?  @relation("PublishedVersion", fields: [publishedVersionId], references: [id])
+  publishedVersionId String?        @unique
+
   @@map("course")
+}
+
+model CourseVersion {
+  id            String    @id @default(cuid())
+  versionNumber Int
+  status        VersionStatus @default(DRAFT)
+  
+  title         String
+  description   String?
+  coverImage    String?
+  startDate     DateTime?
+  endDate       DateTime?
+  
+  content       Json?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  course        Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId      String
+  
+  exports       CourseExport[]
+  
+  publishedFor  Course?   @relation("PublishedVersion")
+
+  @@unique([courseId, versionNumber])
+  @@map("course_version")
+}
+
+model CourseExport {
+  id              String        @id @default(cuid())
+  filePath        String
+  fileSize        BigInt
+  status          ExportStatus  @default(PENDING)
+  
+  createdAt       DateTime      @default(now())
+  completedAt     DateTime?
+
+  courseVersion   CourseVersion @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+  courseVersionId String
+
+  @@map("course_export")
+}
+
+enum VersionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }
 
 model Section {

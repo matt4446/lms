@@ -1,12 +1,16 @@
+using Aspire.Hosting;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+var postgresPasswordResource = builder.AddParameter("postgres-password", "postgres");
 var postgres = builder.AddPostgres("postgres")
+    .WithLifetime(ContainerLifetime.Persistent)
     .WithHostPort(51213)
     .WithPgWeb()
-    .WithDataVolume()
+    .WithDataVolume("a1")
+    .WithPassword(postgresPasswordResource)
     .WithEnvironment("POSTGRES_PASSWORD", "postgres");
 
 var db = postgres.AddDatabase("drillskill");
@@ -21,6 +25,7 @@ builder.AddViteApp("web", "../DrillSkill.Web")
     .WithExternalHttpEndpoints()
     .WithEnvironment("DATABASE_URL", db)
     .WithEnvironment("REDIS_URL", redis)
+    .WithEnvironment("STORAGE_PATH", "./uploads") // Local storage for uploads
     .WithCommand(
         "reset-db", 
         "Reset Database",
