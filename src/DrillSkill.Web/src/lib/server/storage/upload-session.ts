@@ -87,6 +87,23 @@ export class UploadSessionService {
     uploadSessions.delete(id);
   }
 
+  async failSession(id: string, reason: string): Promise<void> {
+    console.error(`Upload session ${id} failed: ${reason}`);
+    await this.cancelSession(id);
+  }
+
+  async cleanupExpiredSessions(): Promise<number> {
+    let count = 0;
+    const now = new Date();
+    for (const [id, session] of uploadSessions.entries()) {
+      if (session.expiresAt < now) {
+        await this.cleanupSession(id);
+        count++;
+      }
+    }
+    return count;
+  }
+
   private async cleanupSession(id: string) {
     await this.cancelSession(id);
   }

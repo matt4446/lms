@@ -53,26 +53,26 @@
 *Goal: Instructors can restore courses from ZIP files.*
 *Independent Test: Upload ZIP and verify course creation.*
 
-- [ ] T023 [US4] Implement import logic (Unzip/Validate) in `src/DrillSkill.Web/src/lib/server/courses/import.ts`
-- [ ] T024 [US4] Create import UI with chunked uploader in `src/DrillSkill.Web/src/routes/courses/import/+page.svelte`
-- [ ] T025 [US4] Implement import finalization endpoint in `src/DrillSkill.Web/src/routes/api/courses/import/finalize/+server.ts`
-- [ ] T026 [US4] Add E2E test for import in `src/DrillSkill.Web/tests/e2e/courses/import.test.ts`
+- [x] T023 [US4] Implement import logic (Unzip/Validate) in `src/DrillSkill.Web/src/lib/server/courses/import.ts`
+- [x] T024 [US4] Create import UI with chunked uploader in `src/DrillSkill.Web/src/routes/courses/import/+page.svelte`
+- [x] T025 [US4] Implement import finalization endpoint in `src/DrillSkill.Web/src/routes/api/courses/import/finalize/+server.ts`
+- [x] T026 [US4] Add E2E test for import in `src/DrillSkill.Web/tests/e2e/courses/import.test.ts`
 
 ## Phase 7: User Story 5 - Manage Versions (P2)
 *Goal: Instructors can manage drafts and published versions.*
 *Independent Test: Publish a draft, create new draft, switch versions.*
 
-- [ ] T027 [US5] Implement `publishVersion` method in `src/DrillSkill.Web/src/lib/server/courses/service.ts`
-- [ ] T028 [US5] Implement `createDraftFromPublished` method in `src/DrillSkill.Web/src/lib/server/courses/service.ts`
-- [ ] T029 [US5] Create version history UI in `src/DrillSkill.Web/src/routes/courses/[id]/(manage)/versions/+page.svelte`
-- [ ] T030 [US5] Implement version switching actions in `src/DrillSkill.Web/src/routes/courses/[id]/(manage)/versions/+page.server.ts`
-- [ ] T031 [US5] Add E2E test for versioning in `src/DrillSkill.Web/tests/e2e/courses/versioning.test.ts`
+- [x] T027 [US5] Implement `publishVersion` method in `src/DrillSkill.Web/src/lib/server/courses/service.ts`
+- [x] T028 [US5] Implement `createDraftFromPublished` method in `src/DrillSkill.Web/src/lib/server/courses/service.ts`
+- [x] T029 [US5] Create version history UI in `src/DrillSkill.Web/src/routes/courses/[id]/(manage)/versions/+page.svelte`
+- [x] T030 [US5] Implement version switching actions in `src/DrillSkill.Web/src/routes/courses/[id]/(manage)/versions/+page.server.ts`
+- [x] T031 [US5] Add E2E test for versioning in `src/DrillSkill.Web/tests/e2e/courses/versioning.test.ts`
 
 ## Phase 8: Polish
 *Goal: Robustness and cleanup.*
 
-- [ ] T032 [P] Add error handling for failed uploads in `src/DrillSkill.Web/src/lib/server/storage/upload-session.ts`
-- [ ] T033 [P] Implement cleanup job for old exports/uploads in `src/DrillSkill.Web/src/lib/server/jobs/cleanup.ts`
+- [x] T032 [P] Add error handling for failed uploads in `src/DrillSkill.Web/src/lib/server/storage/upload-session.ts`
+- [x] T033 [P] Implement cleanup job for old exports/uploads in `src/DrillSkill.Web/src/lib/server/jobs/cleanup.ts`
 
 ## Dependencies
 

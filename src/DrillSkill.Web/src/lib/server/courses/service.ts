@@ -95,10 +95,25 @@ export class CourseService {
 
   async publishVersion(courseId: string, versionId: string) {
     return await prisma.$transaction(async (tx) => {
+      // Verify version exists and belongs to course
+      const version = await tx.courseVersion.findUnique({
+        where: { id: versionId }
+      });
+
+      if (!version || version.courseId !== courseId) {
+        throw new Error('Version not found');
+      }
+
+      if (version.status !== 'DRAFT') {
+        throw new Error('Only draft versions can be published');
+      }
+
       // 1. Update version status
-      const version = await tx.courseVersion.update({
+      const updatedVersion = await tx.courseVersion.update({
         where: { id: versionId },
-        data: { status: 'PUBLISHED' }
+        data: { 
+            status: 'PUBLISHED'
+        }
       });
 
       // 2. Update course published version
@@ -110,13 +125,56 @@ export class CourseService {
         }
       });
 
-      return version;
+      return updatedVersion;
     });
   }
 
   async createDraftFromPublished(courseId: string) {
-    // TODO: Implement
-    throw new Error('Not implemented');
+    return await prisma.$transaction(async (tx) => {
+      // 1. Get latest version number
+      const course = await tx.course.findUnique({
+        where: { id: courseId },
+        include: {
+          versions: {
+            orderBy: { versionNumber: 'desc' },
+            take: 1
+          },
+          publishedVersion: true
+        }
+      });
+
+      if (!course) throw new Error('Course not found');
+
+      // Check if a draft already exists
+      const latestVersion = course.versions[0];
+      if (latestVersion && latestVersion.status === 'DRAFT') {
+        return latestVersion; // Return existing draft
+      }
+
+      // Determine source for new draft (Published or Latest)
+      const sourceVersion = course.publishedVersion || latestVersion;
+      if (!sourceVersion) {
+          // Should not happen if course exists, as creation makes v1
+          throw new Error('No version to copy from');
+      }
+
+      const newVersionNumber = (latestVersion?.versionNumber || 0) + 1;
+
+      // 2. Create new version
+      const newDraft = await tx.courseVersion.create({
+        data: {
+          courseId,
+          versionNumber: newVersionNumber,
+          title: sourceVersion.title,
+          description: sourceVersion.description,
+          content: sourceVersion.content ?? Prisma.JsonNull,
+          status: 'DRAFT',
+          coverImage: sourceVersion.coverImage
+        }
+      });
+
+      return newDraft;
+    });
   }
 
   async deleteCourse(id: string) {
