@@ -9,12 +9,12 @@ export const load: LayoutServerLoad = async ({ params, request }) => {
     });
 
     if (!session) {
-        throw redirect(302, `/auth/login?redirectTo=/courses/${params.id}/learn`);
+        throw redirect(302, `/auth/login?redirectTo=/courses/${params.courseId}/learn`);
     }
 
     const course = await prisma.course.findUnique({
         where: {
-            id: params.id
+            id: params.courseId
         },
         include: {
             sections: {

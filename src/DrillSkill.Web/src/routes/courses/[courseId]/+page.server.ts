@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
 
     const course = await prisma.course.findUnique({
         where: {
-            id: params.id
+            id: params.courseId
         },
         include: {
             owner: {
@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
             where: {
                 userId_courseId: {
                     userId: session.user.id,
-                    courseId: params.id
+                    courseId: params.courseId
                 }
             }
         });
@@ -68,10 +68,10 @@ export const actions: Actions = {
         });
 
         if (!session) {
-            throw redirect(302, `/auth/login?redirectTo=/courses/${params.id}`);
+            throw redirect(302, `/auth/login?redirectTo=/courses/${params.courseId}`);
         }
 
-        const courseId = params.id;
+        const courseId = params.courseId;
         const userId = session.user.id;
 
         try {

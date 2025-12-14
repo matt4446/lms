@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
         throw redirect(302, '/auth/login');
     }
 
-    const courseId = params.id;
+    const courseId = params.courseId;
 
     const course = await prisma.course.findUnique({
         where: { id: courseId },

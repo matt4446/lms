@@ -16,14 +16,14 @@
                 email,
                 password,
                 name,
-                callbackURL: "/dashboard"
+                callbackURL: "/courses"
             });
 
             if (err) {
                 error = err.message || 'An error occurred';
             } else {
                 // Force full reload to ensure session is picked up
-                window.location.href = "/dashboard";
+                window.location.href = "/courses";
             }
         } catch (e) {
             console.error("Registration error:", e);
@@ -39,7 +39,7 @@
         try {
             const { data, error: err } = await authClient.signIn.social({
                 provider: "google",
-                callbackURL: "/dashboard"
+                callbackURL: "/courses"
             });
 
             if (err) {
